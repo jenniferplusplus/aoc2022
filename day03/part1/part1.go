@@ -13,14 +13,14 @@ func ScoreDupes(line string) int {
 
 	for _, c := range line[i:] {
 		if itemSet.Contains(c) {
-			return score(c)
+			return Score(c)
 		}
 	}
 
 	return 0
 }
 
-func score(item rune) int {
+func Score(item rune) int {
 	if item >= 65 && item <= 90 {
 		return int(item - 38)
 	}

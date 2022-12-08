@@ -1,7 +1,8 @@
 package main
 
 import (
-	"advent-of-code-2022/day03/part1"
+	//"advent-of-code-2022/day03/part1"
+	"advent-of-code-2022/day03/part2"
 	"bufio"
 	"log"
 	"os"
@@ -19,8 +20,9 @@ func main() {
 	//}
 
 	var sum int
-	for _, line := range lines {
-		sum += part1.ScoreDupes(line)
+	for i := 0; i < len(lines); i += 3 {
+		dupes := part2.Intersect(lines[i : i+3])
+		sum += part2.Score(dupes)
 	}
 
 	log.Println(sum)
