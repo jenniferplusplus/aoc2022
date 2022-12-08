@@ -1,7 +1,8 @@
 package main
 
 import (
-	"advent-of-code-2022/day02/part1"
+	//"advent-of-code-2022/day02/part1"
+	"advent-of-code-2022/day02/part2"
 	"bufio"
 	"log"
 	"os"
@@ -9,10 +10,12 @@ import (
 
 func main() {
 	lines := readInput()
+	//lines := []string{"A Y", "B X", "C Z"}
 
 	var sum int
 	for _, line := range lines {
-		sum += part1.Score(line)
+		//sum += part1.Score(line)
+		sum += part2.Score(line)
 	}
 
 	log.Println(sum)
