@@ -1,11 +1,11 @@
 package part1
 
 import (
-	mapset "github.com/deckarep/golang-set"
+	mapset "github.com/deckarep/golang-set/v2"
 )
 
 func ScoreDupes(line string) int {
-	itemSet := mapset.NewSet()
+	itemSet := mapset.NewSet[rune]()
 	i := len(line) / 2
 	for _, c := range line[:i] {
 		itemSet.Add(c)
