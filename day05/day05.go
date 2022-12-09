@@ -1,7 +1,7 @@
 package main
 
 import (
-	"advent-of-code-2022/day04/part1"
+	"advent-of-code-2022/day05/part1"
 	"bufio"
 	"log"
 	"os"
