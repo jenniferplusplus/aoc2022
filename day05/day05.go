@@ -2,6 +2,9 @@ package main
 
 import (
 	"advent-of-code-2022/day05/part1"
+	"advent-of-code-2022/day05/part2"
+
+	//"advent-of-code-2022/day05/part2"
 	"bufio"
 	"log"
 	"os"
@@ -22,7 +25,7 @@ func main() {
 	//}
 
 	stacks, controls, labels := part1.ParseInput(lines)
-	part1.Process(stacks, controls)
+	part2.Process(stacks, controls)
 	result := ""
 	for i := 0; i < len(labels); i++ {
 		result += part1.Top(stacks[labels[i]])

@@ -12,10 +12,10 @@ type offset struct {
 	id  rune
 }
 
-type control struct {
-	src   rune
-	dest  rune
-	count int
+type Control struct {
+	Src   rune
+	Dest  rune
+	Count int
 }
 
 func Top(stack *lane.Stack[rune]) string {
@@ -26,12 +26,12 @@ func Top(stack *lane.Stack[rune]) string {
 	return ""
 }
 
-func Process(stacks map[int32]*lane.Stack[rune], controls []control) {
+func Process(stacks map[int32]*lane.Stack[rune], controls []Control) {
 	for _, c := range controls {
-		for i := 0; i < c.count; i++ {
-			val, popped := stacks[c.src].Pop()
+		for i := 0; i < c.Count; i++ {
+			val, popped := stacks[c.Src].Pop()
 			if popped {
-				stacks[c.dest].Push(val)
+				stacks[c.Dest].Push(val)
 			} else {
 				log.Println(val)
 			}
@@ -39,7 +39,7 @@ func Process(stacks map[int32]*lane.Stack[rune], controls []control) {
 	}
 }
 
-func ParseInput(lines []string) (map[int32]*lane.Stack[rune], []control, []rune) {
+func ParseInput(lines []string) (map[int32]*lane.Stack[rune], []Control, []rune) {
 	init, ctl := splitInput(lines)
 	offsets := parseOffsets(init[len(init)-1])
 	stacks := parseInit(init, offsets)
@@ -103,15 +103,15 @@ func parseInit(lines []string, offsets []offset) map[int32]*lane.Stack[rune] {
 // move 8 from 7 to 1
 // move 9 from 1 to 9
 // 0	1 2    3 4  5
-func parseControl(lines []string) []control {
-	controls := make([]control, 0, len(lines))
+func parseControl(lines []string) []Control {
+	controls := make([]Control, 0, len(lines))
 	for i, line := range lines {
 		tokens := strings.Split(line, " ")
 		count, err := strconv.ParseInt(tokens[1], 10, 32)
 		if err != nil {
 			log.Panicf("couldn't parse instruction line %v (%v)", i, err)
 		}
-		controls = append(controls, control{count: int(count), src: rune(tokens[3][0]), dest: rune(tokens[5][0])})
+		controls = append(controls, Control{Count: int(count), Src: rune(tokens[3][0]), Dest: rune(tokens[5][0])})
 	}
 
 	return controls
