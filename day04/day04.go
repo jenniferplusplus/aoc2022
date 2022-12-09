@@ -1,6 +1,7 @@
 package main
 
 import (
+	"advent-of-code-2022/day04/part1"
 	"bufio"
 	"log"
 	"os"
@@ -9,10 +10,23 @@ import (
 func main() {
 	lines := readInput()
 	//lines := []string{
-
+	//	"2-4,6-8",
+	//	"2-3,4-5",
+	//	"5-7,7-9",
+	//	"2-8,3-7",
+	//	"6-6,4-6",
+	//	"2-6,4-8",
 	//}
 
-	log.Println(lines[:10])
+	overlaps := 0
+	for _, line := range lines {
+		a, b := part1.ParseInput(line)
+		if a.Contains(b) || b.Contains(a) {
+			overlaps++
+		}
+	}
+
+	log.Println(overlaps)
 }
 
 func readInput() []string {
