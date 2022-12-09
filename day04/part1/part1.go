@@ -3,6 +3,8 @@ package part1
 import (
 	"github.com/oleiade/lane/v2"
 	"log"
+	"strconv"
+	"strings"
 )
 
 type offset struct {
@@ -10,11 +12,48 @@ type offset struct {
 	id  rune
 }
 
-func ParseInput(lines []string) {
-	init, _ := splitInput(lines)
-	stacks := parseInit(init)
-	head, present := stacks['5'].Head()
-	log.Print(string(head), present)
+type control struct {
+	src   rune
+	dest  rune
+	count int
+}
+
+func Top(stack *lane.Stack[rune]) string {
+	head, exists := stack.Head()
+	if exists {
+		return string(head)
+	}
+	return ""
+}
+
+func Process(stacks map[int32]*lane.Stack[rune], controls []control) {
+	for _, c := range controls {
+		for i := 0; i < c.count; i++ {
+			val, popped := stacks[c.src].Pop()
+			if popped {
+				stacks[c.dest].Push(val)
+			} else {
+				log.Println(val)
+			}
+		}
+	}
+}
+
+func ParseInput(lines []string) (map[int32]*lane.Stack[rune], []control, []rune) {
+	init, ctl := splitInput(lines)
+	offsets := parseOffsets(init[len(init)-1])
+	stacks := parseInit(init, offsets)
+	controls := parseControl(ctl)
+
+	log.Println(stacks)
+	log.Println(controls[:4])
+
+	labels := make([]rune, 0, len(offsets))
+	for _, o := range offsets {
+		labels = append(labels, o.id)
+	}
+
+	return stacks, controls, labels
 }
 
 func splitInput(lines []string) (init []string, control []string) {
@@ -28,18 +67,24 @@ func splitInput(lines []string) (init []string, control []string) {
 	return lines[:i], lines[i+1:]
 }
 
-func parseInit(lines []string) map[int32]*lane.Stack[rune] {
-	labels := lines[len(lines)-1]
-	values := lines[:len(lines)-1]
-	stacks := map[int32]*lane.Stack[rune]{}
-	offsets := make([]offset, 0, 9)
-
-	// Initialize empty stacks
-	for col, id := range labels {
+func parseOffsets(line string) []offset {
+	offsets := make([]offset, 0)
+	for col, id := range line {
 		if id != ' ' {
 			offsets = append(offsets, offset{col, id})
-			stacks[id] = lane.NewStack[rune]()
 		}
+	}
+
+	return offsets
+}
+
+func parseInit(lines []string, offsets []offset) map[int32]*lane.Stack[rune] {
+	values := lines[:len(lines)-1]
+	stacks := map[int32]*lane.Stack[rune]{}
+
+	// Initialize empty stacks
+	for _, o := range offsets {
+		stacks[o.id] = lane.NewStack[rune]()
 	}
 
 	// Fill the stacks
@@ -53,4 +98,21 @@ func parseInit(lines []string) map[int32]*lane.Stack[rune] {
 	}
 
 	return stacks
+}
+
+// move 8 from 7 to 1
+// move 9 from 1 to 9
+// 0	1 2    3 4  5
+func parseControl(lines []string) []control {
+	controls := make([]control, 0, len(lines))
+	for i, line := range lines {
+		tokens := strings.Split(line, " ")
+		count, err := strconv.ParseInt(tokens[1], 10, 32)
+		if err != nil {
+			log.Panicf("couldn't parse instruction line %v (%v)", i, err)
+		}
+		controls = append(controls, control{count: int(count), src: rune(tokens[3][0]), dest: rune(tokens[5][0])})
+	}
+
+	return controls
 }
