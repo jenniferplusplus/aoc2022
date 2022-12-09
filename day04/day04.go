@@ -21,7 +21,7 @@ func main() {
 	overlaps := 0
 	for _, line := range lines {
 		a, b := part1.ParseInput(line)
-		if a.Contains(b) || b.Contains(a) {
+		if a.Overlaps(b) {
 			overlaps++
 		}
 	}

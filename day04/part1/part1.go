@@ -18,6 +18,20 @@ func (a Span) Contains(b Span) bool {
 	return false
 }
 
+// Overlaps Part 2, but I have to define it here because of locality
+func (a Span) Overlaps(b Span) bool {
+	if a.Start <= b.End && a.End >= b.End {
+		return true
+	}
+	if a.Start <= b.Start && a.End >= b.Start {
+		return true
+	}
+	if a.Contains(b) || b.Contains(a) {
+		return true
+	}
+	return false
+}
+
 func ParseInput(line string) (Span, Span) {
 	tokens := strings.Split(line, ",")
 	a := newSpan(tokens[0])
