@@ -1,6 +1,7 @@
 package main
 
 import (
+	"advent-of-code-2022/day04/part1"
 	"bufio"
 	"log"
 	"os"
@@ -12,7 +13,7 @@ func main() {
 
 	//}
 
-	log.Println(lines[:10])
+	part1.ParseInput(lines)
 }
 
 func readInput() []string {
