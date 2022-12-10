@@ -40,23 +40,6 @@ func (cwd *Dir) Size(out chan int64) int64 {
 	return cwd._size(out)
 }
 
-func (cwd *Dir) _size(out chan int64) int64 {
-	size := int64(0)
-	for _, dir := range cwd.Links {
-		size += dir._size(out)
-	}
-
-	for _, file := range cwd.Files {
-		size += int64(file.Size)
-	}
-
-	if out != nil {
-		out <- size
-	}
-
-	return size
-}
-
 func NewRoot() *Dir {
 	root := NewDir("", nil)
 	root.Root = root
@@ -83,6 +66,23 @@ func Parse(lines []string) *Dir {
 	}
 
 	return root
+}
+
+func (cwd *Dir) _size(out chan int64) int64 {
+	size := int64(0)
+	for _, dir := range cwd.Links {
+		size += dir._size(out)
+	}
+
+	for _, file := range cwd.Files {
+		size += int64(file.Size)
+	}
+
+	if out != nil {
+		out <- size
+	}
+
+	return size
 }
 
 func parseLine(line string, cwd *Dir) *Dir {
