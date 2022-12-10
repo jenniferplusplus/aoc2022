@@ -2,6 +2,7 @@ package main
 
 import (
 	"advent-of-code-2022/day07/part1"
+	"advent-of-code-2022/day07/part2"
 	"bufio"
 	"log"
 	"os"
@@ -35,7 +36,26 @@ func main() {
 	//	"7214296 k",
 	//}
 
+	totalSpace := int64(70000000)
+	requiredSpace := int64(30000000)
 	root := part1.Parse(lines)
+	usedSpace := root.Size(nil)
+	availableSpace := totalSpace - usedSpace
+	neededSpace := requiredSpace - availableSpace
+
+	sizes := make(chan int64)
+	filteredP2 := part2.Filter(sizes, func(i int64) bool {
+		return i >= neededSpace
+	})
+	go root.Size(sizes)
+	sorted := part2.Sort(filteredP2)
+	result, err := part2.First(sorted, func(i int64) bool {
+		return i >= neededSpace
+	})
+	if err != nil {
+		log.Panic(err)
+	}
+	log.Println("Part 2 result:", result)
 
 	//go cwd.Size(100000, match)
 	//
@@ -43,7 +63,7 @@ func main() {
 	//	sum += size
 	//}
 
-	filter := func(values chan int64, max int64) chan int64 {
+	filterLte := func(values chan int64, max int64) chan int64 {
 		out := make(chan int64)
 		go func() {
 			defer close(out)
@@ -70,11 +90,11 @@ func main() {
 	}
 
 	values := make(chan int64)
-	filtered := filter(values, 100_000)
+	filtered := filterLte(values, 100_000)
 	filteredSum := reduce(filtered)
 	sum := root.Size(values)
-	log.Println("Total:", sum)
-	log.Println("Filtered:", <-filteredSum)
+	log.Println("Part 1 Total:", sum)
+	log.Println("Part 1 Filtered:", <-filteredSum)
 }
 
 func readInput() []string {
